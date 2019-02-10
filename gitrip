@@ -1,0 +1,53 @@
+#!/bin/bash
+
+# gitr - Clones multiple repos from any GitHub account in one command!
+
+# -u [username]
+# -r [repo] [-r repo#2 -r repo#3 -r ...]
+# [optional: -p [path]]
+
+while getopts u:"r:"p: option; do
+  case ${option} in
+    u) UNAME=${OPTARG};;
+    r) REPOS+=("$OPTARG");;
+    p) DIR=${OPTARG};;
+  esac
+done
+
+gitrip () {
+  for repo in "${REPOS[@]}"; do
+    git clone https://github.com/$UNAME/$repo.git
+    echo "-------------------------------------------------------------"
+  done
+}
+
+if [[ $UNAME && $REPOS && $DIR ]] ; then 
+
+  echo "============================================================="
+  echo "Cloning specified repositories to $DIR ..."
+
+  cd $DIR
+  gitrip
+
+  echo "Cloning completed!"
+  echo "============================================================="
+
+elif [[ $UNAME && $REPOS && -z $DIR ]] ; then
+
+  echo "============================================================="
+  echo "Cloning specified repositories to CURRENT directory ($(pwd)) ..."
+
+  gitrip
+
+  echo "Cloning completed!"
+  echo "============================================================="
+
+
+else
+  echo "----------------------------- gitrip -------------------------------"
+  echo "-- Clones specified GitHub repositories to specified path with one command!"
+  echo "- $ ./gitrip.sh -u [GitHub username] -r [repo#1] -r [repo#n] [-p [path to clone to]]"
+  echo "- You can input as many repos as needed with multiple -r flags. "
+  echo "- If a path is not specified, your current working directory will be used instead."
+fi
+
