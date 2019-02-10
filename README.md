@@ -1,4 +1,4 @@
-## Clone specific GitHub repositories to a specified path with one command!
+## gitr - A simple tool to clone specified repositories
 
 `./gitrip.sh -u [GitHub username] -r [repo#1] -r [repo#n] [-p [path to clone to]]`
 
