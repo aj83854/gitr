@@ -1,6 +1,6 @@
 ## gitr - A simple tool to clone specified repositories
 
-`./gitrip.sh -u [GitHub username] -r [repo#1] -r [repo#n] [-p [path to clone to]]`
+`./gitr -u [GitHub username] -r [repo#1] -r [repo#n] [-p [path to clone to]]`
 
 Specify as many repos as needed with multiple -r flags.
 
