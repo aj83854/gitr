@@ -46,7 +46,7 @@ elif [[ $UNAME && $REPOS && -z $DIR ]] ; then
 else
   echo "----------------------------- gitrip -------------------------------"
   echo "-- Clones specified GitHub repositories to specified path with one command!"
-  echo "- $ ./gitrip.sh -u [GitHub username] -r [repo#1] -r [repo#n] [-p [path to clone to]]"
+  echo "- $ ./gitr -u [GitHub username] -r [repo#1] -r [repo#n] [-p [path to clone to]]"
   echo "- You can input as many repos as needed with multiple -r flags. "
   echo "- If a path is not specified, your current working directory will be used instead."
 fi
