@@ -20,37 +20,26 @@ done
 
 shift "$(( OPTIND - 1 ))"
 
-if [[ $SECURE == 1 ]] ; then
-
-  printf "  Cloning repos over SSH!\n"
-
-  gitrip () {
-    for repo in "${REPOS[@]}"; do
+gitrip () {
+  for repo in "${REPOS[@]}"; do
+    if [[ $SECURE == 1 ]] ; then
+      printf "Connecting to GitHub via SSH...\n"
       git clone git@github.com:$UNAME/$repo.git
       echo "-------------------------------------------------------------"
-    done
-  }
-
-else
-
-  gitrip () {
-    for repo in "${REPOS[@]}"; do
+    else
+      printf "Connecting to GitHub via HTTPS...\n"
       git clone https://github.com/$UNAME/$repo.git
       echo "-------------------------------------------------------------"
-    done
-  }
-
-fi
-
+    fi
+  done
+}
 
 if [[ $UNAME && $REPOS && $DIR ]] ; then
   
   echo "============================================================="
   echo "Cloning specified repositories to $DIR ..."
-  
   cd $DIR
   gitrip
-  
   echo "Cloning completed!"
   echo "============================================================="
 
@@ -60,9 +49,7 @@ elif [[ $UNAME && $REPOS && -z $DIR ]] ; then
   
   echo "============================================================="
   echo "Cloning specified repositories to CURRENT directory ($(pwd)) ..."
-  
   gitrip
-  
   echo "Cloning completed!"
   echo "============================================================="
 
