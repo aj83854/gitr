@@ -1,7 +1,13 @@
 ## gitr - A simple tool to clone specified repositories
 
-`./gitr -u [GitHub username] -r [repo#1] -r [repo#n] [-p [path to clone to]]`
+#### Usage:
+
+`./gitr [-s]-u [GitHub username] -r [repo#1] -r [repo#n] [-p [path to clone to]]`
 
 Specify as many repos as needed with multiple -r flags.
 
-*Note that if a path is not specified, your current working directory will be used instead.*
+You can add the 's' flag before the -u flag (or anywhere you like) to download over SSH instead of the default setting, HTTPS:
+
+`./gitr -su [GitHub username] -r [repo#1] -r [repo#n]`
+
+*Note that if a path is not specified, your current working directory will be used instead!*
