@@ -2,52 +2,82 @@
 
 # gitr - Clones multiple repos from any GitHub account in one command!
 
+# [optional: -s [use SSH instead of HTTPS] (can be used before the -u flag, like -su)
 # -u [username]
 # -r [repo] [-r repo#2 -r repo#3 -r ...]
 # [optional: -p [path]]
 
-while getopts u:"r:"p: option; do
+SECURE=0
+
+while getopts u:"r:"p:s option; do
   case ${option} in
     u) UNAME=${OPTARG};;
     r) REPOS+=("$OPTARG");;
     p) DIR=${OPTARG};;
+    s) SECURE=1;;
   esac
 done
 
-gitrip () {
-  for repo in "${REPOS[@]}"; do
-    git clone https://github.com/$UNAME/$repo.git
-    echo "-------------------------------------------------------------"
-  done
-}
+shift "$(( OPTIND - 1 ))"
 
-if [[ $UNAME && $REPOS && $DIR ]] ; then 
+if [[ $SECURE == 1 ]] ; then
 
-  echo "============================================================="
-  echo "Cloning specified repositories to $DIR ..."
+  printf "  Cloning repos over SSH!\n"
 
-  cd $DIR
-  gitrip
-
-  echo "Cloning completed!"
-  echo "============================================================="
-
-elif [[ $UNAME && $REPOS && -z $DIR ]] ; then
-
-  echo "============================================================="
-  echo "Cloning specified repositories to CURRENT directory ($(pwd)) ..."
-
-  gitrip
-
-  echo "Cloning completed!"
-  echo "============================================================="
-
+  gitrip () {
+    for repo in "${REPOS[@]}"; do
+      git clone git@github.com:$UNAME/$repo.git
+      echo "-------------------------------------------------------------"
+    done
+  }
 
 else
-  echo "----------------------------- gitrip -------------------------------"
-  echo "-- Clones specified GitHub repositories to specified path with one command!"
-  echo "- $ ./gitr -u [GitHub username] -r [repo#1] -r [repo#n] [-p [path to clone to]]"
-  echo "- You can input as many repos as needed with multiple -r flags. "
-  echo "- If a path is not specified, your current working directory will be used instead."
+
+  gitrip () {
+    for repo in "${REPOS[@]}"; do
+      git clone https://github.com/$UNAME/$repo.git
+      echo "-------------------------------------------------------------"
+    done
+  }
+
 fi
 
+
+if [[ $UNAME && $REPOS && $DIR ]] ; then
+  
+  echo "============================================================="
+  echo "Cloning specified repositories to $DIR ..."
+  
+  cd $DIR
+  gitrip
+  
+  echo "Cloning completed!"
+  echo "============================================================="
+
+  exit 0
+
+elif [[ $UNAME && $REPOS && -z $DIR ]] ; then
+  
+  echo "============================================================="
+  echo "Cloning specified repositories to CURRENT directory ($(pwd)) ..."
+  
+  gitrip
+  
+  echo "Cloning completed!"
+  echo "============================================================="
+
+  exit 0
+
+else
+  
+  printf "\n---------------------------------- gitrip ------------------------------------\n"
+  echo "- Usage: "
+  printf "$ ./gitr [-s]-u [GitHub username] -r [repo#1] -r [repo#n] [-p [path to clone to]]\n"
+  echo "- You can input as many repos as needed with multiple -r flags. "
+  echo "- If a path is not specified, your current working directory will be used instead."
+  echo "- Set the -s flag if you wish to download over SSH instead of HTTPS (-su [username])"
+  printf "\n> Either a username, repository, or both were not specified... exiting.\n\n"
+
+  exit 1
+
+fi
